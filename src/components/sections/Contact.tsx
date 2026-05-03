@@ -9,7 +9,7 @@ const BUDGETS = ['<$1k', '$1k–$10k', '$10k–$50k', '$50k+'] as const;
 
 // Web3Forms — public key, intentionally embedded in the bundle.
 // Spam protection is handled by Web3Forms' filtering. Rotate via web3forms.com if abused.
-const WEB3FORMS_KEY = 'e96cc73c-6ec7-4fe4-9d0f-6be05b65e113';
+const WEB3FORMS_KEY = 'f3446a87-f9bb-4e17-b96f-b499ab1d8e18';
 
 const faqs = [
   {
