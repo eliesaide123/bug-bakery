@@ -4,6 +4,8 @@ import Reveal from '@/components/ui/Reveal';
 
 const PHONE_NUMBER = '+96171375587';
 const PHONE_DISPLAY = '+961 71 375 587';
+const CONTACT_EMAIL = 'contact@bug-bakery.com';
+const BUDGETS = ['<$1k', '$1k–$10k', '$10k–$50k', '$50k+'] as const;
 
 const faqs = [
   {
@@ -69,9 +71,33 @@ const Contact = () => {
   const [phoneOpen, setPhoneOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [company, setCompany] = useState('');
+  const [budget, setBudget] = useState<string>('');
+  const [message, setMessage] = useState('');
+
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const subject = `New project inquiry — ${name}`;
+    const bodyLines = [
+      `Name: ${name}`,
+      `Email: ${email}`,
+      company && `Company / role: ${company}`,
+      budget && `Budget: ${budget}`,
+      '',
+      'Project details:',
+      message,
+    ].filter(Boolean);
+    const mailto =
+      `mailto:${CONTACT_EMAIL}` +
+      `?subject=${encodeURIComponent(subject)}` +
+      `&body=${encodeURIComponent(bodyLines.join('\n'))}`;
+
+    window.location.href = mailto;
     setSubmitted(true);
+    window.setTimeout(() => setSubmitted(false), 4000);
   };
 
   useEffect(() => {
@@ -191,6 +217,8 @@ const Contact = () => {
                   <input
                     required
                     type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                     className="w-full px-1 py-3 bg-transparent border-b border-black/30 focus:border-black outline-none transition-colors"
                   />
                 </div>
@@ -201,6 +229,8 @@ const Contact = () => {
                   <input
                     required
                     type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="w-full px-1 py-3 bg-transparent border-b border-black/30 focus:border-black outline-none transition-colors"
                   />
                 </div>
@@ -211,6 +241,8 @@ const Contact = () => {
                 </label>
                 <input
                   type="text"
+                  value={company}
+                  onChange={(e) => setCompany(e.target.value)}
                   className="w-full px-1 py-3 bg-transparent border-b border-black/30 focus:border-black outline-none transition-colors"
                 />
               </div>
@@ -219,20 +251,24 @@ const Contact = () => {
                   Project budget
                 </label>
                 <div className="flex flex-wrap gap-2">
-                  {['<$1k', '$1k–$10k', '$10k–$50k', '$50k+'].map((b) => (
-                    <label
-                      key={b}
-                      className="px-4 py-2 border border-black/20 rounded-full text-sm cursor-pointer hover:bg-black hover:text-white hover:border-black transition-colors"
-                    >
-                      <input
-                        type="radio"
-                        name="budget"
-                        value={b}
-                        className="hidden"
-                      />
-                      {b}
-                    </label>
-                  ))}
+                  {BUDGETS.map((b) => {
+                    const selected = budget === b;
+                    return (
+                      <button
+                        key={b}
+                        type="button"
+                        onClick={() => setBudget(selected ? '' : b)}
+                        aria-pressed={selected}
+                        className={`px-4 py-2 border rounded-full text-sm cursor-pointer transition-colors ${
+                          selected
+                            ? 'bg-black text-white border-black'
+                            : 'border-black/20 hover:bg-black hover:text-white hover:border-black'
+                        }`}
+                      >
+                        {b}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
               <div>
@@ -242,22 +278,25 @@ const Contact = () => {
                 <textarea
                   required
                   rows={5}
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
                   className="w-full px-1 py-3 bg-transparent border-b border-black/30 focus:border-black outline-none transition-colors resize-none"
                 />
               </div>
               <button
                 type="submit"
-                disabled={submitted}
-                className="group inline-flex items-center gap-2 px-7 py-4 bg-black text-white text-sm rounded-full hover:opacity-80 transition-opacity disabled:opacity-50"
+                className="group inline-flex items-center gap-2 px-7 py-4 bg-black text-white text-sm rounded-full hover:opacity-80 transition-opacity"
               >
-                {submitted ? 'Sent ✓' : 'Send message'}
-                {!submitted && (
-                  <ArrowUpRight
-                    size={16}
-                    className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                  />
-                )}
+                {submitted ? 'Opening your email…' : 'Send message'}
+                <ArrowUpRight
+                  size={16}
+                  className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                />
               </button>
+              <p className="text-xs opacity-50 mt-2">
+                Opens your email app pre-filled to{' '}
+                <span className="font-medium">{CONTACT_EMAIL}</span> — review and hit send.
+              </p>
             </form>
           </Reveal>
         </div>
