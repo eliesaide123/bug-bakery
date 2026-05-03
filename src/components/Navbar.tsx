@@ -49,9 +49,15 @@ const Navbar = () => {
       <nav className="max-w-7xl mx-auto px-6 lg:px-10 py-5 flex items-center justify-between">
         <a
           href="#home"
-          className="flex items-baseline gap-2 font-bold text-lg tracking-tight"
+          className="flex items-center gap-2.5 font-bold text-lg tracking-tight"
         >
-          <span className="inline-block w-2 h-2 bg-black rounded-sm" />
+          <img
+            src="/favicon.svg"
+            alt="Bug Bakery"
+            width={28}
+            height={28}
+            className="w-7 h-7 rounded-md"
+          />
           Bug<span className="opacity-50">Bakery</span>
         </a>
         <ul className="hidden lg:flex items-center gap-10 text-sm">
