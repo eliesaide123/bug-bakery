@@ -18,6 +18,9 @@ const cols = [
       { label: 'Mobile Apps', href: '#services' },
       { label: 'Desktop Software', href: '#services' },
       { label: 'AI & LLM Apps', href: '#services' },
+      { label: 'RAG & AI Chatbots', href: '#services' },
+      { label: 'Backend & APIs', href: '#services' },
+      { label: 'Bug Squashing', href: '#services' },
     ],
   },
   {
