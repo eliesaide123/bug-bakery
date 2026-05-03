@@ -77,27 +77,45 @@ const Contact = () => {
   const [budget, setBudget] = useState<string>('');
   const [message, setMessage] = useState('');
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError(null);
+    setSending(true);
 
-    const subject = `New project inquiry — ${name}`;
-    const bodyLines = [
-      `Name: ${name}`,
-      `Email: ${email}`,
-      company && `Company / role: ${company}`,
-      budget && `Budget: ${budget}`,
-      '',
-      'Project details:',
+    const params = new URLSearchParams({
+      'form-name': 'contact',
+      name,
+      email,
+      company,
+      budget,
       message,
-    ].filter(Boolean);
-    const mailto =
-      `mailto:${CONTACT_EMAIL}` +
-      `?subject=${encodeURIComponent(subject)}` +
-      `&body=${encodeURIComponent(bodyLines.join('\n'))}`;
+    });
 
-    window.location.href = mailto;
-    setSubmitted(true);
-    window.setTimeout(() => setSubmitted(false), 4000);
+    try {
+      const res = await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: params.toString(),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      setSubmitted(true);
+      setName('');
+      setEmail('');
+      setCompany('');
+      setBudget('');
+      setMessage('');
+    } catch (err) {
+      setError(
+        'Could not send your message. Please try again, or email us directly at ' +
+          CONTACT_EMAIL +
+          '.',
+      );
+    } finally {
+      setSending(false);
+    }
   };
 
   useEffect(() => {
@@ -206,9 +224,19 @@ const Contact = () => {
         <div className="lg:col-span-7">
           <Reveal variant="up" delay={200}>
             <form
+              name="contact"
+              method="POST"
+              data-netlify="true"
+              data-netlify-honeypot="bot-field"
               onSubmit={onSubmit}
               className="space-y-8 bg-gray-100 p-8 md:p-12 rounded-xl border border-black/10"
             >
+              <input type="hidden" name="form-name" value="contact" />
+              <p className="hidden">
+                <label>
+                  Don't fill this out: <input name="bot-field" />
+                </label>
+              </p>
               <div className="grid md:grid-cols-2 gap-8">
                 <div>
                   <label className="block text-xs uppercase tracking-wider opacity-60 mb-3">
@@ -217,6 +245,7 @@ const Contact = () => {
                   <input
                     required
                     type="text"
+                    name="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     className="w-full px-1 py-3 bg-transparent border-b border-black/30 focus:border-black outline-none transition-colors"
@@ -229,6 +258,7 @@ const Contact = () => {
                   <input
                     required
                     type="email"
+                    name="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full px-1 py-3 bg-transparent border-b border-black/30 focus:border-black outline-none transition-colors"
@@ -241,6 +271,7 @@ const Contact = () => {
                 </label>
                 <input
                   type="text"
+                  name="company"
                   value={company}
                   onChange={(e) => setCompany(e.target.value)}
                   className="w-full px-1 py-3 bg-transparent border-b border-black/30 focus:border-black outline-none transition-colors"
@@ -250,6 +281,7 @@ const Contact = () => {
                 <label className="block text-xs uppercase tracking-wider opacity-60 mb-3">
                   Project budget
                 </label>
+                <input type="hidden" name="budget" value={budget} />
                 <div className="flex flex-wrap gap-2">
                   {BUDGETS.map((b) => {
                     const selected = budget === b;
@@ -278,6 +310,7 @@ const Contact = () => {
                 <textarea
                   required
                   rows={5}
+                  name="message"
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   className="w-full px-1 py-3 bg-transparent border-b border-black/30 focus:border-black outline-none transition-colors resize-none"
@@ -285,18 +318,26 @@ const Contact = () => {
               </div>
               <button
                 type="submit"
-                className="group inline-flex items-center gap-2 px-7 py-4 bg-black text-white text-sm rounded-full hover:opacity-80 transition-opacity"
+                disabled={sending || submitted}
+                className="group inline-flex items-center gap-2 px-7 py-4 bg-black text-white text-sm rounded-full hover:opacity-80 transition-opacity disabled:opacity-60"
               >
-                {submitted ? 'Opening your email…' : 'Send message'}
-                <ArrowUpRight
-                  size={16}
-                  className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                />
+                {submitted ? 'Sent ✓' : sending ? 'Sending…' : 'Send message'}
+                {!submitted && !sending && (
+                  <ArrowUpRight
+                    size={16}
+                    className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                  />
+                )}
               </button>
-              <p className="text-xs opacity-50 mt-2">
-                Opens your email app pre-filled to{' '}
-                <span className="font-medium">{CONTACT_EMAIL}</span> — review and hit send.
-              </p>
+
+              {submitted && (
+                <p className="text-sm text-green-700 mt-2">
+                  Thanks — we got it. You'll hear back within one business day.
+                </p>
+              )}
+              {error && (
+                <p className="text-sm text-red-700 mt-2">{error}</p>
+              )}
             </form>
           </Reveal>
         </div>
