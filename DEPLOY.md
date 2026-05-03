@@ -1,0 +1,131 @@
+# Bug Bakery — Deployment
+
+How to ship `bug-bakery.com` to Netlify (free tier) using your Spaceship-bought
+domain.
+
+---
+
+## 1. Prepare the repo
+
+```sh
+npm install
+npm run build
+```
+
+`npm run build` runs three steps:
+
+1. `node scripts/generate-sitemap.mjs` — regenerates `public/sitemap.xml` from
+   `src/content/posts.ts`. Run this any time you add a blog post.
+2. `tsc` — type-checks the code.
+3. `vite build` — emits the static site into `dist/`.
+
+The output in `dist/` is a fully static SPA. That's what Netlify will serve.
+
+---
+
+## 2. Push to GitHub (once)
+
+Netlify deploys from a Git remote. If you haven't already:
+
+```sh
+git init
+git add -A
+git commit -m "Bug Bakery: initial site"
+gh repo create bug-bakery --public --source=. --remote=origin --push
+```
+
+(Or use the GitHub UI to make the repo and push.)
+
+---
+
+## 3. Connect Netlify
+
+1. Go to https://app.netlify.com/ → **Add new site → Import an existing project**.
+2. Connect GitHub, pick the `bug-bakery` repo.
+3. Netlify will read `netlify.toml` and pre-fill:
+   - **Build command:** `npm run build`
+   - **Publish directory:** `dist`
+4. Click **Deploy**.
+
+The first build takes ~1–2 minutes. You'll get a URL like
+`https://random-name-12345.netlify.app`. Open it — site should be live.
+
+---
+
+## 4. Point `bug-bakery.com` (Spaceship → Netlify)
+
+You bought the domain on Spaceship. Two routes:
+
+### Option A — Use Netlify's nameservers (recommended, easiest)
+
+1. In Netlify: **Domain management → Add a domain → bug-bakery.com**.
+2. Netlify shows you 4 nameservers, e.g.:
+   ```
+   dns1.p01.nsone.net
+   dns2.p01.nsone.net
+   dns3.p01.nsone.net
+   dns4.p01.nsone.net
+   ```
+3. In Spaceship: **My domains → bug-bakery.com → Nameservers → Custom**, paste
+   the four Netlify nameservers, save.
+4. Wait 10–60 minutes for DNS propagation. Netlify will auto-issue a free
+   Let's Encrypt SSL certificate once propagation completes.
+
+### Option B — Keep Spaceship's DNS, point records manually
+
+1. In Netlify: **Domain management → Add a domain → bug-bakery.com**, then
+   **Set up Netlify DNS — No, I'll use my own DNS**.
+2. In Spaceship's DNS panel, add:
+   ```
+   Type     Host    Value                              TTL
+   A        @       75.2.60.5                          Auto
+   CNAME    www     <your-site-name>.netlify.app.      Auto
+   ```
+   (Netlify shows the exact load-balancer IP and CNAME target on its domain
+   settings page — copy from there in case it changes.)
+3. Wait for propagation. In Netlify, click **Verify DNS configuration**, then
+   **Provision certificate**.
+
+---
+
+## 5. Force HTTPS + www → apex
+
+In Netlify → **Domain management**:
+
+- Set the primary domain to `bug-bakery.com` (apex).
+- Make sure **HTTPS** is on (it is by default once the cert provisions).
+- Add a redirect from `www.bug-bakery.com` → `https://bug-bakery.com`
+  (Netlify offers this as a one-click toggle).
+
+---
+
+## 6. Verify SEO is wired
+
+After the domain goes live:
+
+- `https://bug-bakery.com/sitemap.xml` should return XML with 8+ URLs.
+- `https://bug-bakery.com/robots.txt` should return the robots file pointing
+  at the sitemap.
+- Submit the sitemap in **Google Search Console** (add the property using DNS
+  verification — Spaceship lets you add a TXT record).
+- Submit it in **Bing Webmaster Tools** too.
+
+---
+
+## 7. Add new blog posts
+
+1. Edit `src/content/posts.ts` — append a new entry to the `posts` array.
+2. Commit, push. Netlify auto-redeploys, and `npm run build` regenerates
+   `sitemap.xml` to include the new post.
+
+That's it.
+
+---
+
+## Local development
+
+```sh
+npm run dev      # http://localhost:5173
+npm run build    # produces dist/
+npm run preview  # serves dist/ locally to spot-check the production build
+```
