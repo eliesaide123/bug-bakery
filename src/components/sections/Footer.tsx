@@ -25,7 +25,7 @@ const cols = [
     links: [
       { label: 'Email', href: 'mailto:contact@bug-bakery.com' },
       { label: 'TikTok', href: 'https://www.tiktok.com/@bugbakerylb' },
-      { label: 'LinkedIn', href: '#' },
+      { label: 'LinkedIn', href: 'https://www.linkedin.com/company/bug-bakery' },
     ],
   },
 ];
