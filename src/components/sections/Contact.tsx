@@ -26,7 +26,7 @@ const faqs = [
   },
   {
     q: 'What stacks do you work in?',
-    a: 'Web: React, Next.js, Vue, Svelte. Mobile: React Native, Swift, Kotlin. Desktop: Tauri, Electron. AI: Python, OpenAI, Anthropic, vector DBs. Backend: Node, Python, Postgres, Redis.',
+    a: 'Web: React, Next.js, Angular, Vue, Svelte. Mobile: React Native, Swift, Kotlin. Desktop: Tauri, Electron. AI: Python, OpenAI, Anthropic, vector DBs. Backend: Node, .NET, Python, Postgres, Redis.',
   },
   {
     q: 'Can you fix an existing codebase instead of building new?',
