@@ -1,4 +1,4 @@
-import { Globe, Smartphone, Monitor, Sparkles, Server, Bug, ArrowUpRight } from 'lucide-react';
+import { Globe, Smartphone, Monitor, Sparkles, Server, Bug, MessageSquare, ArrowUpRight } from 'lucide-react';
 import Reveal from '@/components/ui/Reveal';
 
 const services = [
@@ -27,18 +27,25 @@ const services = [
     num: '04',
     icon: Sparkles,
     title: 'AI & LLM Apps',
-    body: 'Chatbots, agents, RAG pipelines, and AI-powered features that ship — with the prompts, evals, and guardrails to match.',
-    deliverables: ['LLMs', 'RAG', 'Agents'],
+    body: 'Custom AI-powered features inside your product — agents, automations, and LLM integrations with the prompts, evals, and guardrails to ship.',
+    deliverables: ['LLMs', 'Agents', 'Evals'],
   },
   {
     num: '05',
+    icon: MessageSquare,
+    title: 'RAG & AI Chatbots',
+    body: 'Customer-support bots, doc Q&A, and knowledge bases trained on your data. Vector search, retrieval pipelines, and a UI that actually feels good to talk to.',
+    deliverables: ['RAG', 'Chatbots', 'Vector DBs'],
+  },
+  {
+    num: '06',
     icon: Server,
     title: 'Backend & APIs',
     body: 'REST and GraphQL APIs, real-time systems, queues, and the cloud infra that keeps them online at 3am.',
     deliverables: ['Node', 'Python', 'Postgres'],
   },
   {
-    num: '06',
+    num: '07',
     icon: Bug,
     title: 'Bug Squashing',
     body: 'Inherited a codebase with bugs nobody can fix? We hunt them down, patch them clean, and leave a runbook behind.',
@@ -63,15 +70,17 @@ const Services = () => {
 
       <Reveal variant="up" delay={100}>
         <h2 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter mb-20 max-w-3xl leading-[1.02]">
-          Six disciplines,
+          Seven disciplines,
           <br />
           <span className="italic font-light">one bakery.</span>
         </h2>
       </Reveal>
 
       <div className="grid md:grid-cols-2 gap-px bg-black/10 border border-black/10 rounded-xl overflow-hidden">
-        {services.map((s, i) => (
-          <Reveal key={s.title} variant="up" delay={i * 100}>
+        {services.map((s, i) => {
+          const lastOdd = i === services.length - 1 && services.length % 2 === 1;
+          return (
+          <Reveal key={s.title} variant="up" delay={i * 100} className={lastOdd ? 'md:col-span-2' : undefined}>
             <div className="bg-gray-200 p-10 md:p-14 hover:bg-gray-100 transition-colors group h-full flex flex-col">
               <div className="flex items-start justify-between mb-10">
                 <s.icon
@@ -106,7 +115,8 @@ const Services = () => {
               </div>
             </div>
           </Reveal>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

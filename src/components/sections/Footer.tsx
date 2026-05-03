@@ -24,8 +24,8 @@ const cols = [
     title: 'Connect',
     links: [
       { label: 'Email', href: 'mailto:contact@bug-bakery.com' },
+      { label: 'TikTok', href: 'https://www.tiktok.com/@bugbakerylb' },
       { label: 'LinkedIn', href: '#' },
-      { label: 'Twitter / X', href: '#' },
     ],
   },
 ];
@@ -61,16 +61,21 @@ const Footer = () => {
                     {c.title}
                   </p>
                   <ul className="space-y-3">
-                    {c.links.map((l) => (
-                      <li key={l.label}>
-                        <a
-                          href={l.href}
-                          className="text-sm hover:opacity-60 transition-opacity"
-                        >
-                          {l.label}
-                        </a>
-                      </li>
-                    ))}
+                    {c.links.map((l) => {
+                      const external = /^https?:\/\//.test(l.href);
+                      return (
+                        <li key={l.label}>
+                          <a
+                            href={l.href}
+                            target={external ? '_blank' : undefined}
+                            rel={external ? 'noreferrer' : undefined}
+                            className="text-sm hover:opacity-60 transition-opacity"
+                          >
+                            {l.label}
+                          </a>
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
               ))}
