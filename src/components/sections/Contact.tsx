@@ -1,6 +1,9 @@
-import { useState, type FormEvent } from 'react';
-import { Mail, Phone, MapPin, Plus, Minus, ArrowUpRight } from 'lucide-react';
+import { useEffect, useState, type FormEvent } from 'react';
+import { Mail, Phone, MapPin, Plus, Minus, ArrowUpRight, X } from 'lucide-react';
 import Reveal from '@/components/ui/Reveal';
+
+const PHONE_NUMBER = '+96171375587';
+const PHONE_DISPLAY = '+961 71 375 587';
 
 const faqs = [
   {
@@ -63,10 +66,36 @@ const FaqItem = ({
 const Contact = () => {
   const [submitted, setSubmitted] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [phoneOpen, setPhoneOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitted(true);
+  };
+
+  useEffect(() => {
+    if (!phoneOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setPhoneOpen(false);
+    };
+    document.addEventListener('keydown', onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [phoneOpen]);
+
+  const copyPhone = async () => {
+    try {
+      await navigator.clipboard.writeText(PHONE_NUMBER);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1800);
+    } catch {
+      setCopied(false);
+    }
   };
 
   return (
@@ -111,11 +140,19 @@ const Contact = () => {
                   hello@bug-bakery.com
                 </a>
               </li>
-              <li className="flex items-center gap-4">
-                <span className="w-10 h-10 rounded-full border border-black/20 flex items-center justify-center">
-                  <Phone size={16} strokeWidth={1.5} />
-                </span>
-                <span>Available on request</span>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => setPhoneOpen(true)}
+                  className="group flex items-center gap-4 text-left hover:opacity-70 transition-opacity"
+                >
+                  <span className="w-10 h-10 rounded-full border border-black/20 flex items-center justify-center transition-colors group-hover:bg-black group-hover:text-white group-hover:border-black">
+                    <Phone size={16} strokeWidth={1.5} />
+                  </span>
+                  <span className="underline-offset-4 group-hover:underline">
+                    Available on request
+                  </span>
+                </button>
               </li>
               <li className="flex items-center gap-4">
                 <span className="w-10 h-10 rounded-full border border-black/20 flex items-center justify-center">
@@ -182,7 +219,7 @@ const Contact = () => {
                   Project budget
                 </label>
                 <div className="flex flex-wrap gap-2">
-                  {['<$25k', '$25–75k', '$75–150k', '$150k+'].map((b) => (
+                  {['<$1k', '$1k–$10k', '$10k–$50k', '$50k+'].map((b) => (
                     <label
                       key={b}
                       className="px-4 py-2 border border-black/20 rounded-full text-sm cursor-pointer hover:bg-black hover:text-white hover:border-black transition-colors"
@@ -249,6 +286,67 @@ const Contact = () => {
           ))}
         </ul>
       </div>
+
+      {phoneOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="phone-dialog-title"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+        >
+          <button
+            aria-label="Close"
+            onClick={() => setPhoneOpen(false)}
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in"
+          />
+          <div className="relative w-full max-w-md bg-gray-200 rounded-2xl border border-black/10 shadow-2xl p-8 md:p-10">
+            <button
+              type="button"
+              onClick={() => setPhoneOpen(false)}
+              aria-label="Close"
+              className="absolute top-4 right-4 w-9 h-9 rounded-full border border-black/15 flex items-center justify-center hover:bg-black hover:text-white hover:border-black transition-colors"
+            >
+              <X size={16} />
+            </button>
+
+            <div className="flex items-center gap-3 mb-6">
+              <span className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center">
+                <Phone size={16} strokeWidth={1.5} />
+              </span>
+              <p
+                id="phone-dialog-title"
+                className="text-xs uppercase tracking-[0.3em] opacity-60"
+              >
+                Direct line
+              </p>
+            </div>
+
+            <p className="text-3xl md:text-4xl font-bold tracking-tighter mb-2">
+              {PHONE_DISPLAY}
+            </p>
+            <p className="opacity-70 leading-relaxed mb-8 text-sm">
+              Tap call to dial directly, or copy the number to your phone.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-3">
+              <a
+                href={`tel:${PHONE_NUMBER}`}
+                className="group inline-flex items-center justify-center gap-2 px-6 py-3 bg-black text-white text-sm rounded-full hover:opacity-80 transition-opacity"
+              >
+                Call now
+                <Phone size={14} />
+              </a>
+              <button
+                type="button"
+                onClick={copyPhone}
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 border border-black text-sm rounded-full hover:bg-black hover:text-white transition-colors"
+              >
+                {copied ? 'Copied ✓' : 'Copy number'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
