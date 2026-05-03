@@ -7,6 +7,10 @@ const PHONE_DISPLAY = '+961 71 375 587';
 const CONTACT_EMAIL = 'contact@bug-bakery.com';
 const BUDGETS = ['<$1k', '$1k–$10k', '$10k–$50k', '$50k+'] as const;
 
+// Web3Forms — public key, intentionally embedded in the bundle.
+// Spam protection is handled by Web3Forms' filtering. Rotate via web3forms.com if abused.
+const WEB3FORMS_KEY = 'e96cc73c-6ec7-4fe4-9d0f-6be05b65e113';
+
 const faqs = [
   {
     q: 'What does a typical engagement look like?',
@@ -85,22 +89,31 @@ const Contact = () => {
     setError(null);
     setSending(true);
 
-    const params = new URLSearchParams({
-      'form-name': 'contact',
+    const payload = {
+      access_key: WEB3FORMS_KEY,
+      subject: `New project inquiry — ${name}`,
+      from_name: 'Bug Bakery website',
+      replyto: email,
       name,
       email,
       company,
       budget,
       message,
-    });
+    };
 
     try {
-      const res = await fetch('/', {
+      const res = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: params.toString(),
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify(payload),
       });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = await res.json().catch(() => null);
+      if (!res.ok || !json?.success) {
+        throw new Error(json?.message || `HTTP ${res.status}`);
+      }
       setSubmitted(true);
       setName('');
       setEmail('');
@@ -224,19 +237,9 @@ const Contact = () => {
         <div className="lg:col-span-7">
           <Reveal variant="up" delay={200}>
             <form
-              name="contact"
-              method="POST"
-              data-netlify="true"
-              data-netlify-honeypot="bot-field"
               onSubmit={onSubmit}
               className="space-y-8 bg-gray-100 p-8 md:p-12 rounded-xl border border-black/10"
             >
-              <input type="hidden" name="form-name" value="contact" />
-              <p className="hidden">
-                <label>
-                  Don't fill this out: <input name="bot-field" />
-                </label>
-              </p>
               <div className="grid md:grid-cols-2 gap-8">
                 <div>
                   <label className="block text-xs uppercase tracking-wider opacity-60 mb-3">
