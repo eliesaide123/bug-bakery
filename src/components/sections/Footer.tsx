@@ -23,7 +23,7 @@ const cols = [
   {
     title: 'Connect',
     links: [
-      { label: 'Email', href: 'mailto:hello@bug-bakery.com' },
+      { label: 'Email', href: 'mailto:contact@bug-bakery.com' },
       { label: 'GitHub', href: '#' },
       { label: 'LinkedIn', href: '#' },
       { label: 'Twitter / X', href: '#' },

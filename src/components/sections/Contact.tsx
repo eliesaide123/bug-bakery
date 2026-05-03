@@ -136,8 +136,8 @@ const Contact = () => {
                 <span className="w-10 h-10 rounded-full border border-black/20 flex items-center justify-center">
                   <Mail size={16} strokeWidth={1.5} />
                 </span>
-                <a href="mailto:hello@bug-bakery.com" className="hover:opacity-60 transition-opacity">
-                  hello@bug-bakery.com
+                <a href="mailto:contact@bug-bakery.com" className="hover:opacity-60 transition-opacity">
+                  contact@bug-bakery.com
                 </a>
               </li>
               <li>
