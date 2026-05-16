@@ -12,19 +12,40 @@ const SITE = 'https://bug-bakery.com';
 
 const postsSrc = readFileSync(path.join(root, 'src/content/posts.ts'), 'utf8');
 
-const slugs = [...postsSrc.matchAll(/slug:\s*'([^']+)'/g)].map((m) => m[1]);
-const dates = [...postsSrc.matchAll(/date:\s*'([^']+)'/g)].map((m) => m[1]);
+// Pair slug + date per post object so they can't desync if a field is reordered.
+// Matches across newlines but stops at the closing brace of each post object.
+const posts = [
+  ...postsSrc.matchAll(/slug:\s*'([^']+)'[^}]*?date:\s*'([^']+)'/gs),
+].map((m) => ({ slug: m[1], date: m[2] }));
 
-const today = new Date().toISOString().slice(0, 10);
+if (posts.length === 0) {
+  console.error('generate-sitemap: parsed 0 posts from src/content/posts.ts');
+  process.exit(1);
+}
+
+const latestPostDate = posts
+  .map((p) => p.date)
+  .sort()
+  .at(-1);
 
 const urls = [
-  { loc: `${SITE}/`, lastmod: today, priority: '1.0', changefreq: 'monthly' },
-  { loc: `${SITE}/blog/`, lastmod: today, priority: '0.8', changefreq: 'weekly' },
-  ...slugs.map((slug, i) => ({
-    loc: `${SITE}/blog/${slug}/`,
-    lastmod: dates[i] || today,
-    priority: '0.7',
+  {
+    loc: `${SITE}/`,
+    lastmod: latestPostDate,
+    priority: '1.0',
     changefreq: 'monthly',
+  },
+  {
+    loc: `${SITE}/blog/`,
+    lastmod: latestPostDate,
+    priority: '0.8',
+    changefreq: 'weekly',
+  },
+  ...posts.map((p) => ({
+    loc: `${SITE}/blog/${p.slug}/`,
+    lastmod: p.date,
+    priority: '0.7',
+    changefreq: 'yearly',
   })),
 ];
 
@@ -44,4 +65,4 @@ ${urls
 `;
 
 writeFileSync(path.join(root, 'public/sitemap.xml'), xml);
-console.log(`Wrote public/sitemap.xml — ${urls.length} URLs`);
+console.log(`Wrote public/sitemap.xml — ${urls.length} URLs (${posts.length} posts)`);

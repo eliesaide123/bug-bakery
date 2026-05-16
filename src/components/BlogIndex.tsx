@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import { posts } from '@/content/posts';
+import { applySeo, getSeoForUrl } from '@/lib/seo';
 
 const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString('en-US', {
@@ -9,6 +11,10 @@ const formatDate = (iso: string) =>
   });
 
 const BlogIndex = () => {
+  useEffect(() => {
+    applySeo(getSeoForUrl('/blog/'));
+  }, []);
+
   return (
     <div className="bg-gray-200 text-black min-h-screen">
       <header className="max-w-5xl mx-auto px-6 lg:px-10 pt-16 pb-12">

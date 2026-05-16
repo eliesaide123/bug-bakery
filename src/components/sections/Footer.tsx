@@ -94,23 +94,6 @@ const Footer = () => {
           <p className="opacity-60">
             © {new Date().getFullYear()} Bug Bakery. All rights reserved.
           </p>
-          <ul className="flex gap-6 opacity-60">
-            <li>
-              <a href="#" className="hover:opacity-100 transition-opacity">
-                Privacy
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:opacity-100 transition-opacity">
-                Terms
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:opacity-100 transition-opacity">
-                Cookies
-              </a>
-            </li>
-          </ul>
         </div>
       </div>
     </footer>

@@ -5,71 +5,130 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#000000" />
 
+    <!-- title and per-page meta (description, canonical, og:*, twitter:*) -->
+    <!-- are injected per route by vite-prerender-plugin. The defaults below   -->
+    <!-- only apply during dev mode where no prerender runs.                   -->
     <title>Bug Bakery — Software engineering studio · Web, Mobile, Desktop, AI</title>
-    <meta
-      name="description"
-      content="Bug Bakery is a software engineering studio shipping web, mobile, desktop, and AI products for 1,000+ clients. Fixed-fee, weekly demos, fewer bugs."
-    />
-    <meta name="keywords" content="software engineering, web development, mobile apps, desktop apps, AI development, LLM apps, React, React Native, Tauri, software studio, freelance software engineer" />
+
     <meta name="author" content="Bug Bakery" />
-    <link rel="canonical" href="https://bug-bakery.com/" />
-
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://bug-bakery.com/" />
-    <meta property="og:title" content="Bug Bakery — Software engineering studio" />
-    <meta property="og:description" content="Web, mobile, desktop, and AI software engineering for 1,000+ clients. Fresh code, fewer bugs." />
     <meta property="og:site_name" content="Bug Bakery" />
-    <meta property="og:image" content="https://bug-bakery.com/og.png" />
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Bug Bakery — Software engineering studio" />
-    <meta name="twitter:description" content="Web, mobile, desktop, and AI software engineering for 1,000+ clients." />
-    <meta name="twitter:image" content="https://bug-bakery.com/og.png" />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <link rel="alternate" hreflang="en" href="https://bug-bakery.com/" />
+    <link rel="alternate" hreflang="x-default" href="https://bug-bakery.com/" />
 
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "Organization",
+        "@id": "https://bug-bakery.com/#organization",
         "name": "Bug Bakery",
         "url": "https://bug-bakery.com",
-        "logo": "https://bug-bakery.com/favicon.svg",
-        "description": "Software engineering studio shipping web, mobile, desktop, and AI products.",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://bug-bakery.com/favicon.svg",
+          "caption": "Bug Bakery"
+        },
+        "image": "https://bug-bakery.com/og.png",
+        "description": "Software engineering studio shipping web, mobile, desktop, and AI products for 1,000+ clients worldwide.",
         "email": "contact@bug-bakery.com",
+        "telephone": "+96171375587",
         "foundingDate": "2018",
-        "sameAs": []
+        "address": {
+          "@type": "PostalAddress",
+          "addressCountry": "LB"
+        },
+        "areaServed": [
+          { "@type": "Place", "name": "Worldwide" }
+        ],
+        "sameAs": [
+          "https://www.linkedin.com/company/bug-bakery",
+          "https://www.tiktok.com/@bugbakerylb"
+        ],
+        "knowsAbout": [
+          "Web development",
+          "Mobile app development",
+          "Desktop software development",
+          "AI and LLM application development",
+          "Retrieval-augmented generation",
+          "Backend and API engineering",
+          "Software bug fixing and code audits"
+        ],
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Software development services",
+          "itemListElement": [
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Web Development", "description": "Marketing sites, dashboards, and SaaS platforms in React, Next.js, Vue, and Svelte." } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Mobile App Development", "description": "iOS and Android apps, native or React Native." } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Desktop Software Development", "description": "Cross-platform desktop apps for Mac, Windows, and Linux in Tauri or Electron." } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "AI and LLM Application Development", "description": "Custom AI features, agents, automations, and LLM integrations with prompts, evals, and guardrails." } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "RAG and AI Chatbot Development", "description": "Customer-support bots, doc Q&A, and knowledge bases with vector search and retrieval pipelines." } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Backend and API Development", "description": "REST and GraphQL APIs, real-time systems, queues, and cloud infrastructure." } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Bug Fixing and Code Audits", "description": "Audits, refactors, and patches for inherited or legacy codebases." } }
+          ]
+        }
       }
     </script>
 
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "ProfessionalService",
-        "name": "Bug Bakery",
-        "image": "https://bug-bakery.com/og.png",
+        "@type": "WebSite",
+        "@id": "https://bug-bakery.com/#website",
         "url": "https://bug-bakery.com",
-        "telephone": "",
-        "priceRange": "$$",
-        "address": {
-          "@type": "PostalAddress",
-          "addressCountry": "Worldwide"
-        },
-        "areaServed": "Worldwide",
-        "serviceType": [
-          "Web Development",
-          "Mobile App Development",
-          "Desktop Software Development",
-          "AI & LLM Application Development",
-          "Backend & API Development",
-          "Bug Fixing & Code Audits"
-        ]
+        "name": "Bug Bakery",
+        "description": "Software engineering studio shipping web, mobile, desktop, and AI products.",
+        "publisher": { "@id": "https://bug-bakery.com/#organization" },
+        "inLanguage": "en"
       }
     </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <noscript>
+        <header>
+          <h1>Bug Bakery — Software engineering studio</h1>
+          <p>
+            Bug Bakery is a software engineering studio shipping web, mobile,
+            desktop, and AI products for founders, teams, and ambitious solo
+            builders. Fresh code, fewer bugs.
+          </p>
+        </header>
+        <section>
+          <h2>Services</h2>
+          <ul>
+            <li><strong>Web Development</strong> — marketing sites, dashboards, and SaaS in React, Next.js, Angular, Vue, and Svelte.</li>
+            <li><strong>Mobile Apps</strong> — iOS and Android in React Native, Swift, and Kotlin.</li>
+            <li><strong>Desktop Software</strong> — Tauri and Electron apps for Mac, Windows, and Linux.</li>
+            <li><strong>AI &amp; LLM Apps</strong> — agents, automations, evals, and guardrails on OpenAI and Anthropic.</li>
+            <li><strong>RAG &amp; AI Chatbots</strong> — retrieval pipelines, vector search, and support bots.</li>
+            <li><strong>Backend &amp; APIs</strong> — Node, .NET, Python, Postgres, Redis.</li>
+            <li><strong>Bug Squashing</strong> — audits, refactors, and patches for inherited codebases.</li>
+          </ul>
+        </section>
+        <section>
+          <h2>How we work</h2>
+          <p>
+            Fixed-fee pricing, weekly demos, a staging URL from day one, and a
+            runbook your team can extend without us in the room. Engagements
+            typically run 4&ndash;10 weeks from scoping to launch.
+          </p>
+        </section>
+        <section>
+          <h2>Contact</h2>
+          <p>
+            Email <a href="mailto:contact@bug-bakery.com">contact@bug-bakery.com</a>
+            to start a project. We reply within one business day.
+          </p>
+        </section>
+        <p>
+          This site requires JavaScript for the full experience. The links above
+          point to plain-text content for accessibility and search engines.
+        </p>
+      </noscript>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

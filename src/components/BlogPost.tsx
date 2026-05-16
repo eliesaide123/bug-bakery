@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import { type Post, posts } from '@/content/posts';
+import { applySeo, getSeoForUrl } from '@/lib/seo';
 
 const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString('en-US', {
@@ -60,9 +61,7 @@ const applyInline = (s: string) =>
 
 const BlogPost = ({ post }: { post: Post }) => {
   useEffect(() => {
-    document.title = `${post.title} — Bug Bakery`;
-    const meta = document.querySelector('meta[name="description"]');
-    if (meta) meta.setAttribute('content', post.excerpt);
+    applySeo(getSeoForUrl(`/blog/${post.slug}/`));
   }, [post]);
 
   const others = posts.filter((p) => p.slug !== post.slug).slice(0, 3);

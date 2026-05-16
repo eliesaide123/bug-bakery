@@ -96,7 +96,7 @@ const Work = () => {
         {projects.map((p, i) => (
           <Reveal key={p.num} variant="up" delay={i * 100}>
             <a
-              href="#"
+              href="#contact"
               className="group block bg-gray-200 rounded-xl overflow-hidden border border-black/10 hover:border-black/30 transition-colors"
             >
               <div className="relative aspect-[4/3] overflow-hidden bg-black">

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import LoadingScreen from './components/LoadingScreen';
 import Navbar from './components/Navbar';
 import Hero from './components/sections/Hero';
@@ -12,28 +13,20 @@ import Footer from './components/sections/Footer';
 import BlogIndex from './components/BlogIndex';
 import BlogPost from './components/BlogPost';
 import { posts } from './content/posts';
+import { applySeo, getSeoForUrl } from './lib/seo';
 
-const getBlogSlug = (): string | null => {
-  if (typeof window === 'undefined') return null;
-  const path = window.location.pathname;
-  const match = path.match(/^\/blog\/([^/]+)\/?$/);
+const parseBlogSlug = (pathname: string): string | null => {
+  const match = pathname.match(/^\/blog\/([^/]+)\/?$/);
   return match ? match[1] : null;
 };
 
-const isBlogIndex = (): boolean => {
-  if (typeof window === 'undefined') return false;
-  const path = window.location.pathname.replace(/\/+$/, '');
-  return path === '/blog';
-};
+const isBlogIndexPath = (pathname: string): boolean =>
+  pathname.replace(/\/+$/, '') === '/blog';
 
-const App = () => {
-  const blogSlug = getBlogSlug();
-  if (blogSlug) {
-    const post = posts.find((p) => p.slug === blogSlug);
-    if (post) return <BlogPost post={post} />;
-  }
-
-  if (isBlogIndex()) return <BlogIndex />;
+const Home = () => {
+  useEffect(() => {
+    applySeo(getSeoForUrl('/'));
+  }, []);
 
   return (
     <>
@@ -54,6 +47,23 @@ const App = () => {
       </div>
     </>
   );
+};
+
+type AppProps = { url?: string };
+
+const App = ({ url }: AppProps = {}) => {
+  const pathname =
+    url ?? (typeof window !== 'undefined' ? window.location.pathname : '/');
+
+  const blogSlug = parseBlogSlug(pathname);
+  if (blogSlug) {
+    const post = posts.find((p) => p.slug === blogSlug);
+    if (post) return <BlogPost post={post} />;
+  }
+
+  if (isBlogIndexPath(pathname)) return <BlogIndex />;
+
+  return <Home />;
 };
 
 export default App;

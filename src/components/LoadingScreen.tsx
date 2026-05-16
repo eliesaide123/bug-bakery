@@ -8,10 +8,14 @@ const FADE_DURATION_MS = 600;
 const UNMOUNT_AT_MS = FADE_START_MS + FADE_DURATION_MS;
 
 const LoadingScreen = () => {
+  // Skip on SSR/prerender so the static HTML doesn't ship a fixed overlay
+  // covering the page content. Flips true on client mount.
+  const [mounted, setMounted] = useState(false);
   const [fading, setFading] = useState(false);
   const [done, setDone] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
@@ -40,6 +44,7 @@ const LoadingScreen = () => {
     };
   }, []);
 
+  if (!mounted) return null;
   if (done) return null;
 
   return (
